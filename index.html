@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator Estimare Costuri IT</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="py-16">
+            <h1 class="text-center">Calculator Estimare Costuri IT</h1>
+            <p class="text-center mt-8">Instrument pentru estimarea costurilor în proiecte software și hardware</p>
+        </header>
+
+        <main>
+            <!-- Project Information Section -->
+            <section class="card mb-16">
+                <div class="card__header">
+                    <h2>Informații Proiect</h2>
+                </div>
+                <div class="card__body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="projectName" class="form-label">Nume Proiect</label>
+                            <input type="text" id="projectName" class="form-control" placeholder="Ex: Aplicație Web Enterprise">
+                        </div>
+                        <div class="form-group">
+                            <label for="clientName" class="form-label">Client</label>
+                            <input type="text" id="clientName" class="form-control" placeholder="Ex: Compania ABC">
+                        </div>
+                        <div class="form-group">
+                            <label for="projectType" class="form-label">Tip Proiect</label>
+                            <select id="projectType" class="form-control">
+                                <option value="software">Doar Software</option>
+                                <option value="hardware">Doar Hardware</option>
+                                <option value="combined">Software + Hardware</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="complexity" class="form-label">Complexitate</label>
+                            <select id="complexity" class="form-control">
+                                <option value="simple">Simplu</option>
+                                <option value="medium">Mediu</option>
+                                <option value="complex">Complex</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Software Calculator Section -->
+            <section class="card mb-16" id="softwareSection">
+                <div class="card__header">
+                    <h2>Calculator Costuri Software</h2>
+                </div>
+                <div class="card__body">
+                    <h3 class="mb-16">Echipa de Dezvoltare</h3>
+                    <div class="dev-roles-grid">
+                        <div class="role-card">
+                            <h4>Developer Junior</h4>
+                            <p class="rate-display">42 €/oră</p>
+                            <div class="form-group">
+                                <label for="juniorHours" class="form-label">Ore estimate</label>
+                                <input type="number" id="juniorHours" class="form-control" min="0" value="0">
+                            </div>
+                            <div class="cost-display">
+                                <span class="cost-label">Subtotal:</span>
+                                <span id="juniorCost">0 €</span>
+                            </div>
+                        </div>
+                        
+                        <div class="role-card">
+                            <h4>Developer Mid</h4>
+                            <p class="rate-display">65 €/oră</p>
+                            <div class="form-group">
+                                <label for="midHours" class="form-label">Ore estimate</label>
+                                <input type="number" id="midHours" class="form-control" min="0" value="0">
+                            </div>
+                            <div class="cost-display">
+                                <span class="cost-label">Subtotal:</span>
+                                <span id="midCost">0 €</span>
+                            </div>
+                        </div>
+                        
+                        <div class="role-card">
+                            <h4>Developer Senior</h4>
+                            <p class="rate-display">95 €/oră</p>
+                            <div class="form-group">
+                                <label for="seniorHours" class="form-label">Ore estimate</label>
+                                <input type="number" id="seniorHours" class="form-control" min="0" value="0">
+                            </div>
+                            <div class="cost-display">
+                                <span class="cost-label">Subtotal:</span>
+                                <span id="seniorCost">0 €</span>
+                            </div>
+                        </div>
+                        
+                        <div class="role-card">
+                            <h4>Arhitect Software</h4>
+                            <p class="rate-display">85 €/oră</p>
+                            <div class="form-group">
+                                <label for="architectHours" class="form-label">Ore estimate</label>
+                                <input type="number" id="architectHours" class="form-control" min="0" value="0">
+                            </div>
+                            <div class="cost-display">
+                                <span class="cost-label">Subtotal:</span>
+                                <span id="architectCost">0 €</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="mb-16 mt-24">Servicii Adiționale</h3>
+                    <div class="services-grid">
+                        <div class="service-item">
+                            <div class="flex items-center gap-8">
+                                <input type="checkbox" id="qaManual" class="service-checkbox">
+                                <label for="qaManual" class="service-label">Testare QA Manual (35 €/oră)</label>
+                            </div>
+                            <input type="number" id="qaManualHours" class="form-control service-hours" placeholder="200" disabled>
+                            <span class="service-cost" id="qaManualCost">0 €</span>
+                        </div>
+                        
+                        <div class="service-item">
+                            <div class="flex items-center gap-8">
+                                <input type="checkbox" id="qaAuto" class="service-checkbox">
+                                <label for="qaAuto" class="service-label">Testare QA Automatizat (45 €/oră)</label>
+                            </div>
+                            <input type="number" id="qaAutoHours" class="form-control service-hours" placeholder="100" disabled>
+                            <span class="service-cost" id="qaAutoCost">0 €</span>
+                        </div>
+                        
+                        <div class="service-item">
+                            <div class="flex items-center gap-8">
+                                <input type="checkbox" id="documentation" class="service-checkbox">
+                                <label for="documentation" class="service-label">Documentație Tehnică (40 €/oră)</label>
+                            </div>
+                            <input type="number" id="documentationHours" class="form-control service-hours" placeholder="80" disabled>
+                            <span class="service-cost" id="documentationCost">0 €</span>
+                        </div>
+                        
+                        <div class="service-item">
+                            <div class="flex items-center gap-8">
+                                <input type="checkbox" id="training" class="service-checkbox">
+                                <label for="training" class="service-label">Training Utilizatori (40 €/oră)</label>
+                            </div>
+                            <input type="number" id="trainingHours" class="form-control service-hours" placeholder="40" disabled>
+                            <span class="service-cost" id="trainingCost">0 €</span>
+                        </div>
+                        
+                        <div class="service-item">
+                            <div class="flex items-center gap-8">
+                                <input type="checkbox" id="projectMgmt" class="service-checkbox">
+                                <label for="projectMgmt" class="service-label">Management Proiect (75 €/oră)</label>
+                            </div>
+                            <input type="number" id="projectMgmtHours" class="form-control service-hours" placeholder="160" disabled>
+                            <span class="service-cost" id="projectMgmtCost">0 €</span>
+                        </div>
+                    </div>
+
+                    <h3 class="mb-16 mt-24">Licențe Software</h3>
+                    <div id="licensesContainer">
+                        <div class="license-item">
+                            <select class="form-control license-select">
+                                <option value="">Selectează licența...</option>
+                                <option value="database">Licență Bază de Date Enterprise (5000 €)</option>
+                                <option value="framework">Framework Comercial (2500 €)</option>
+                                <option value="cicd">Instrumente CI/CD (1000 €)</option>
+                                <option value="ide">IDE Professional (500 €)</option>
+                                <option value="custom">Personalizată</option>
+                            </select>
+                            <input type="text" class="form-control license-name" placeholder="Numele licenței" style="display: none;">
+                            <input type="number" class="form-control license-quantity" placeholder="Cantitate" min="1" value="1">
+                            <input type="number" class="form-control license-cost" placeholder="Cost unitar" min="0">
+                            <span class="license-total">0 €</span>
+                            <button type="button" class="btn btn--secondary btn--sm remove-license">Șterge</button>
+                        </div>
+                    </div>
+                    <button type="button" id="addLicense" class="btn btn--outline btn--sm mt-8">+ Adaugă Licență</button>
+
+                    <div class="software-total mt-24">
+                        <h3>Total Software: <span id="softwareTotal">0 €</span></h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Hardware Calculator Section -->
+            <section class="card mb-16" id="hardwareSection" style="display: none;">
+                <div class="card__header">
+                    <h2>Calculator Costuri Hardware</h2>
+                </div>
+                <div class="card__body">
+                    <h3 class="mb-16">Componente Hardware</h3>
+                    <div id="componentsContainer">
+                        <div class="component-item">
+                            <input type="text" class="form-control component-name" placeholder="Nume componentă">
+                            <input type="number" class="form-control component-quantity" placeholder="Cantitate" min="1" value="1">
+                            <input type="number" class="form-control component-price" placeholder="Preț unitar (€)" min="0">
+                            <span class="component-total">0 €</span>
+                            <button type="button" class="btn btn--secondary btn--sm remove-component">Șterge</button>
+                        </div>
+                    </div>
+                    <button type="button" id="addComponent" class="btn btn--outline btn--sm mt-8">+ Adaugă Componentă</button>
+
+                    <h3 class="mb-16 mt-24">Servicii Hardware</h3>
+                    <div class="hw-services-grid">
+                        <div class="service-item">
+                            <div class="flex items-center gap-8">
+                                <input type="checkbox" id="assembly" class="hw-service-checkbox">
+                                <label for="assembly" class="service-label">Asamblare și Testare</label>
+                            </div>
+                            <input type="number" id="assemblyCost" class="form-control service-cost-input" placeholder="1500" disabled>
+                            <span class="service-cost" id="assemblyTotal">0 €</span>
+                        </div>
+                        
+                        <div class="service-item">
+                            <div class="flex items-center gap-8">
+                                <input type="checkbox" id="certification" class="hw-service-checkbox">
+                                <label for="certification" class="service-label">Certificări (CE, FCC, ROHS)</label>
+                            </div>
+                            <input type="number" id="certificationCost" class="form-control service-cost-input" placeholder="6000" disabled>
+                            <span class="service-cost" id="certificationTotal">0 €</span>
+                        </div>
+                        
+                        <div class="service-item">
+                            <div class="flex items-center gap-8">
+                                <input type="checkbox" id="logistics" class="hw-service-checkbox">
+                                <label for="logistics" class="service-label">Logistică și Transport</label>
+                            </div>
+                            <input type="number" id="logisticsCost" class="form-control service-cost-input" placeholder="800" disabled>
+                            <span class="service-cost" id="logisticsTotal">0 €</span>
+                        </div>
+                    </div>
+
+                    <div class="hardware-total mt-24">
+                        <h3>Total Hardware: <span id="hardwareTotal">0 €</span></h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Risk and Margin Calculator -->
+            <section class="card mb-16">
+                <div class="card__header">
+                    <h2>Risc și Marjă Comercială</h2>
+                </div>
+                <div class="card__body">
+                    <div class="slider-grid">
+                        <div class="slider-group">
+                            <label for="riskBuffer" class="form-label">Buffer Risc: <span id="riskValue">15</span>%</label>
+                            <input type="range" id="riskBuffer" min="10" max="25" value="15" class="slider">
+                            <div class="slider-info">
+                                <span>10%</span>
+                                <span>25%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="slider-group">
+                            <label for="commercialMargin" class="form-label">Marjă Comercială: <span id="marginValue">20</span>%</label>
+                            <input type="range" id="commercialMargin" min="15" max="30" value="20" class="slider">
+                            <div class="slider-info">
+                                <span>15%</span>
+                                <span>30%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Summary -->
+            <section class="card mb-16">
+                <div class="card__header">
+                    <h2>Sumar Costuri</h2>
+                </div>
+                <div class="card__body">
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <span class="summary-label">Costuri Software:</span>
+                            <span class="summary-value" id="summarySoftware">0 €</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Costuri Hardware:</span>
+                            <span class="summary-value" id="summaryHardware">0 €</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Subtotal:</span>
+                            <span class="summary-value" id="summarySubtotal">0 €</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Buffer Risc:</span>
+                            <span class="summary-value" id="summaryRisk">0 €</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Marjă Comercială:</span>
+                            <span class="summary-value" id="summaryMargin">0 €</span>
+                        </div>
+                        <div class="summary-item total">
+                            <span class="summary-label">TOTAL FINAL:</span>
+                            <span class="summary-value" id="summaryTotal">0 €</span>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container mt-24">
+                        <canvas id="costChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Action Buttons -->
+            <section class="actions-section">
+                <div class="flex gap-16 justify-center">
+                    <button type="button" id="resetBtn" class="btn btn--secondary">Resetează</button>
+                    <button type="button" id="saveBtn" class="btn btn--primary">Salvează Estimarea</button>
+                    <button type="button" id="loadBtn" class="btn btn--outline">Încarcă Estimarea</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
