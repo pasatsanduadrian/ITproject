@@ -720,7 +720,7 @@ class CostCalculator {
             return;
         }
 
-        if (typeof window.html2pdf === 'undefined') {
+        if (typeof window.html2pdf === 'undefined' || window.html2pdf.isStub) {
             this.showMessage('Export PDF indisponibil', 'error');
             return;
         }
