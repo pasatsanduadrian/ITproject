@@ -14,6 +14,11 @@
         </header>
 
         <main>
+            <nav class="flex gap-16 justify-center mb-16">
+                <button type="button" id="navCalculator" class="btn btn--outline">Calculator</button>
+                <button type="button" id="navConfig" class="btn btn--outline">Config</button>
+            </nav>
+            <div id="calculatorView">
             <!-- Project Information Section -->
             <section class="card mb-16">
                 <div class="card__header">
@@ -59,7 +64,7 @@
                     <div class="dev-roles-grid">
                         <div class="role-card">
                             <h4>Developer Junior</h4>
-                            <p class="rate-display">42 €/oră</p>
+                            <p class="rate-display" id="rateJuniorDisplay"></p>
                             <div class="form-group">
                                 <label for="juniorHours" class="form-label">Ore estimate</label>
                                 <input type="number" id="juniorHours" class="form-control" min="0" value="0">
@@ -72,7 +77,7 @@
                         
                         <div class="role-card">
                             <h4>Developer Mid</h4>
-                            <p class="rate-display">65 €/oră</p>
+                            <p class="rate-display" id="rateMidDisplay"></p>
                             <div class="form-group">
                                 <label for="midHours" class="form-label">Ore estimate</label>
                                 <input type="number" id="midHours" class="form-control" min="0" value="0">
@@ -85,7 +90,7 @@
                         
                         <div class="role-card">
                             <h4>Developer Senior</h4>
-                            <p class="rate-display">95 €/oră</p>
+                            <p class="rate-display" id="rateSeniorDisplay"></p>
                             <div class="form-group">
                                 <label for="seniorHours" class="form-label">Ore estimate</label>
                                 <input type="number" id="seniorHours" class="form-control" min="0" value="0">
@@ -98,7 +103,7 @@
                         
                         <div class="role-card">
                             <h4>Arhitect Software</h4>
-                            <p class="rate-display">85 €/oră</p>
+                            <p class="rate-display" id="rateArchitectDisplay"></p>
                             <div class="form-group">
                                 <label for="architectHours" class="form-label">Ore estimate</label>
                                 <input type="number" id="architectHours" class="form-control" min="0" value="0">
@@ -115,7 +120,7 @@
                         <div class="service-item">
                             <div class="flex items-center gap-8">
                                 <input type="checkbox" id="qaManual" class="service-checkbox">
-                                <label for="qaManual" class="service-label">Testare QA Manual (35 €/oră)</label>
+                                <label for="qaManual" class="service-label" id="labelQaManual"></label>
                             </div>
                             <input type="number" id="qaManualHours" class="form-control service-hours" placeholder="200" disabled>
                             <span class="service-cost" id="qaManualCost">0 €</span>
@@ -124,7 +129,7 @@
                         <div class="service-item">
                             <div class="flex items-center gap-8">
                                 <input type="checkbox" id="qaAuto" class="service-checkbox">
-                                <label for="qaAuto" class="service-label">Testare QA Automatizat (45 €/oră)</label>
+                                <label for="qaAuto" class="service-label" id="labelQaAuto"></label>
                             </div>
                             <input type="number" id="qaAutoHours" class="form-control service-hours" placeholder="100" disabled>
                             <span class="service-cost" id="qaAutoCost">0 €</span>
@@ -133,7 +138,7 @@
                         <div class="service-item">
                             <div class="flex items-center gap-8">
                                 <input type="checkbox" id="documentation" class="service-checkbox">
-                                <label for="documentation" class="service-label">Documentație Tehnică (40 €/oră)</label>
+                                <label for="documentation" class="service-label" id="labelDocumentation"></label>
                             </div>
                             <input type="number" id="documentationHours" class="form-control service-hours" placeholder="80" disabled>
                             <span class="service-cost" id="documentationCost">0 €</span>
@@ -142,7 +147,7 @@
                         <div class="service-item">
                             <div class="flex items-center gap-8">
                                 <input type="checkbox" id="training" class="service-checkbox">
-                                <label for="training" class="service-label">Training Utilizatori (40 €/oră)</label>
+                                <label for="training" class="service-label" id="labelTraining"></label>
                             </div>
                             <input type="number" id="trainingHours" class="form-control service-hours" placeholder="40" disabled>
                             <span class="service-cost" id="trainingCost">0 €</span>
@@ -151,7 +156,7 @@
                         <div class="service-item">
                             <div class="flex items-center gap-8">
                                 <input type="checkbox" id="projectMgmt" class="service-checkbox">
-                                <label for="projectMgmt" class="service-label">Management Proiect (75 €/oră)</label>
+                                <label for="projectMgmt" class="service-label" id="labelProjectMgmt"></label>
                             </div>
                             <input type="number" id="projectMgmtHours" class="form-control service-hours" placeholder="160" disabled>
                             <span class="service-cost" id="projectMgmtCost">0 €</span>
@@ -163,10 +168,10 @@
                         <div class="license-item">
                             <select class="form-control license-select">
                                 <option value="">Selectează licența...</option>
-                                <option value="database">Licență Bază de Date Enterprise (5000 €)</option>
-                                <option value="framework">Framework Comercial (2500 €)</option>
-                                <option value="cicd">Instrumente CI/CD (1000 €)</option>
-                                <option value="ide">IDE Professional (500 €)</option>
+                                <option value="database" id="optDatabase"></option>
+                                <option value="framework" id="optFramework"></option>
+                                <option value="cicd" id="optCicd"></option>
+                                <option value="ide" id="optIde"></option>
                                 <option value="custom">Personalizată</option>
                             </select>
                             <input type="text" class="form-control license-name" placeholder="Numele licenței" style="display: none;">
@@ -207,7 +212,7 @@
                         <div class="service-item">
                             <div class="flex items-center gap-8">
                                 <input type="checkbox" id="assembly" class="hw-service-checkbox">
-                                <label for="assembly" class="service-label">Asamblare și Testare</label>
+                                <label for="assembly" class="service-label" id="labelAssembly"></label>
                             </div>
                             <input type="number" id="assemblyCost" class="form-control service-cost-input" placeholder="1500" disabled>
                             <span class="service-cost" id="assemblyTotal">0 €</span>
@@ -216,7 +221,7 @@
                         <div class="service-item">
                             <div class="flex items-center gap-8">
                                 <input type="checkbox" id="certification" class="hw-service-checkbox">
-                                <label for="certification" class="service-label">Certificări (CE, FCC, ROHS)</label>
+                                <label for="certification" class="service-label" id="labelCertification"></label>
                             </div>
                             <input type="number" id="certificationCost" class="form-control service-cost-input" placeholder="6000" disabled>
                             <span class="service-cost" id="certificationTotal">0 €</span>
@@ -225,7 +230,7 @@
                         <div class="service-item">
                             <div class="flex items-center gap-8">
                                 <input type="checkbox" id="logistics" class="hw-service-checkbox">
-                                <label for="logistics" class="service-label">Logistică și Transport</label>
+                                <label for="logistics" class="service-label" id="labelLogistics"></label>
                             </div>
                             <input type="number" id="logisticsCost" class="form-control service-cost-input" placeholder="800" disabled>
                             <span class="service-cost" id="logisticsTotal">0 €</span>
@@ -246,8 +251,8 @@
                 <div class="card__body">
                     <div class="slider-grid">
                         <div class="slider-group">
-                            <label for="riskBuffer" class="form-label">Buffer Risc: <span id="riskValue">15</span>%</label>
-                            <input type="range" id="riskBuffer" min="10" max="25" value="15" class="slider">
+                            <label for="riskBuffer" class="form-label">Buffer Risc: <span id="riskValue"></span>%</label>
+                            <input type="range" id="riskBuffer" min="10" max="25" value="0" class="slider">
                             <div class="slider-info">
                                 <span>10%</span>
                                 <span>25%</span>
@@ -255,8 +260,8 @@
                         </div>
                         
                         <div class="slider-group">
-                            <label for="commercialMargin" class="form-label">Marjă Comercială: <span id="marginValue">20</span>%</label>
-                            <input type="range" id="commercialMargin" min="15" max="30" value="20" class="slider">
+                            <label for="commercialMargin" class="form-label">Marjă Comercială: <span id="marginValue"></span>%</label>
+                            <input type="range" id="commercialMargin" min="15" max="30" value="0" class="slider">
                             <div class="slider-info">
                                 <span>15%</span>
                                 <span>30%</span>
@@ -311,6 +316,106 @@
                     <button type="button" id="resetBtn" class="btn btn--secondary">Resetează</button>
                     <button type="button" id="saveBtn" class="btn btn--primary">Salvează Estimarea</button>
                     <button type="button" id="loadBtn" class="btn btn--outline">Încarcă Estimarea</button>
+                </div>
+            </section>
+            </div>
+
+            <section class="card mb-16" id="configSection" style="display: none;">
+                <div class="card__header">
+                    <h2>Configurare Tarife și Preseturi</h2>
+                </div>
+                <div class="card__body">
+                    <h3 class="mb-8">Tarife Dezvoltatori</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="cfgJunior" class="form-label">Junior €/oră</label>
+                            <input type="number" id="cfgJunior" class="form-control" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="cfgMid" class="form-label">Mid €/oră</label>
+                            <input type="number" id="cfgMid" class="form-control" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="cfgSenior" class="form-label">Senior €/oră</label>
+                            <input type="number" id="cfgSenior" class="form-control" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="cfgArchitect" class="form-label">Arhitect €/oră</label>
+                            <input type="number" id="cfgArchitect" class="form-control" min="0">
+                        </div>
+                    </div>
+
+                    <h3 class="mb-8 mt-24">Tarife Servicii</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="cfgQaManual" class="form-label">QA Manual €/oră</label>
+                            <input type="number" id="cfgQaManual" class="form-control" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="cfgQaAuto" class="form-label">QA Automat €/oră</label>
+                            <input type="number" id="cfgQaAuto" class="form-control" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="cfgDocumentation" class="form-label">Documentație €/oră</label>
+                            <input type="number" id="cfgDocumentation" class="form-control" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="cfgTraining" class="form-label">Training €/oră</label>
+                            <input type="number" id="cfgTraining" class="form-control" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="cfgProjectMgmt" class="form-label">Management Proiect €/oră</label>
+                            <input type="number" id="cfgProjectMgmt" class="form-control" min="0">
+                        </div>
+                    </div>
+
+                    <h3 class="mb-8 mt-24">Costuri Servicii Hardware</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="cfgAssembly" class="form-label">Asamblare €</label>
+                            <input type="number" id="cfgAssembly" class="form-control" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="cfgCertification" class="form-label">Certificări €</label>
+                            <input type="number" id="cfgCertification" class="form-control" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="cfgLogistics" class="form-label">Logistică €</label>
+                            <input type="number" id="cfgLogistics" class="form-control" min="0">
+                        </div>
+                    </div>
+
+                    <h3 class="mb-8 mt-24">Preseturi Licențe</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="cfgLicDbName" class="form-label">Bază de Date - Nume</label>
+                            <input type="text" id="cfgLicDbName" class="form-control">
+                            <label for="cfgLicDbCost" class="form-label mt-4">Cost (€)</label>
+                            <input type="number" id="cfgLicDbCost" class="form-control" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="cfgLicFwName" class="form-label">Framework - Nume</label>
+                            <input type="text" id="cfgLicFwName" class="form-control">
+                            <label for="cfgLicFwCost" class="form-label mt-4">Cost (€)</label>
+                            <input type="number" id="cfgLicFwCost" class="form-control" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="cfgLicCiName" class="form-label">CI/CD - Nume</label>
+                            <input type="text" id="cfgLicCiName" class="form-control">
+                            <label for="cfgLicCiCost" class="form-label mt-4">Cost (€)</label>
+                            <input type="number" id="cfgLicCiCost" class="form-control" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="cfgLicIdeName" class="form-label">IDE - Nume</label>
+                            <input type="text" id="cfgLicIdeName" class="form-control">
+                            <label for="cfgLicIdeCost" class="form-label mt-4">Cost (€)</label>
+                            <input type="number" id="cfgLicIdeCost" class="form-control" min="0">
+                        </div>
+                    </div>
+
+                    <div class="mt-24 flex justify-center">
+                        <button type="button" id="saveConfigBtn" class="btn btn--primary">Salvează Config</button>
+                    </div>
                 </div>
             </section>
         </main>
