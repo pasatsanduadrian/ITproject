@@ -1,31 +1,152 @@
 // Cost Estimation Calculator JavaScript
 
+const defaultConfig = {
+    rates: {
+        junior: 42,
+        mid: 65,
+        senior: 95,
+        architect: 85,
+        qaManual: 35,
+        qaAuto: 45,
+        documentation: 40,
+        training: 40,
+        projectMgmt: 75
+    },
+    hardwareCosts: {
+        assembly: 1500,
+        certification: 6000,
+        logistics: 800
+    },
+    licensePresets: {
+        database: { name: 'Licență Bază de Date Enterprise', cost: 5000 },
+        framework: { name: 'Framework Comercial', cost: 2500 },
+        cicd: { name: 'Instrumente CI/CD', cost: 1000 },
+        ide: { name: 'IDE Professional', cost: 500 }
+    },
+    riskBuffer: 15,
+    commercialMargin: 20
+};
+
+function loadConfig() {
+    try {
+        const raw = localStorage.getItem('costConfig');
+        if (raw) {
+            return JSON.parse(raw);
+        }
+    } catch (e) {
+        console.error('Failed to load config', e);
+    }
+    return JSON.parse(JSON.stringify(defaultConfig));
+}
+
+function saveConfig(cfg) {
+    try {
+        localStorage.setItem('costConfig', JSON.stringify(cfg));
+    } catch (e) {
+        console.error('Failed to save config', e);
+    }
+}
+
 class CostCalculator {
     constructor() {
-        this.rates = {
-            junior: 42,
-            mid: 65,
-            senior: 95,
-            architect: 85,
-            qaManual: 35,
-            qaAuto: 45,
-            documentation: 40,
-            training: 40,
-            projectMgmt: 75
-        };
-
-        this.licensePresets = {
-            database: { name: 'Licență Bază de Date Enterprise', cost: 5000 },
-            framework: { name: 'Framework Comercial', cost: 2500 },
-            cicd: { name: 'Instrumente CI/CD', cost: 1000 },
-            ide: { name: 'IDE Professional', cost: 500 }
-        };
-
+        this.config = loadConfig();
+        this.rates = { ...this.config.rates };
+        this.hardwareCosts = { ...this.config.hardwareCosts };
+        this.licensePresets = JSON.parse(JSON.stringify(this.config.licensePresets));
         this.chart = null;
         this.init();
     }
 
+    applyConfigToUI() {
+        // Developer rates display
+        document.getElementById('rateJuniorDisplay').textContent = `${this.rates.junior} €/oră`;
+        document.getElementById('rateMidDisplay').textContent = `${this.rates.mid} €/oră`;
+        document.getElementById('rateSeniorDisplay').textContent = `${this.rates.senior} €/oră`;
+        document.getElementById('rateArchitectDisplay').textContent = `${this.rates.architect} €/oră`;
+
+        // Service labels
+        document.getElementById('labelQaManual').textContent = `Testare QA Manual (${this.rates.qaManual} €/oră)`;
+        document.getElementById('labelQaAuto').textContent = `Testare QA Automatizat (${this.rates.qaAuto} €/oră)`;
+        document.getElementById('labelDocumentation').textContent = `Documentație Tehnică (${this.rates.documentation} €/oră)`;
+        document.getElementById('labelTraining').textContent = `Training Utilizatori (${this.rates.training} €/oră)`;
+        document.getElementById('labelProjectMgmt').textContent = `Management Proiect (${this.rates.projectMgmt} €/oră)`;
+
+        // Hardware service labels and placeholders
+        document.getElementById('labelAssembly').textContent = 'Asamblare și Testare';
+        document.getElementById('labelCertification').textContent = 'Certificări (CE, FCC, ROHS)';
+        document.getElementById('labelLogistics').textContent = 'Logistică și Transport';
+        document.getElementById('assemblyCost').placeholder = this.hardwareCosts.assembly;
+        document.getElementById('certificationCost').placeholder = this.hardwareCosts.certification;
+        document.getElementById('logisticsCost').placeholder = this.hardwareCosts.logistics;
+
+        // License option texts
+        const setOption = (id, obj) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = `${obj.name} (${obj.cost} €)`;
+        };
+        setOption('optDatabase', this.licensePresets.database);
+        setOption('optFramework', this.licensePresets.framework);
+        setOption('optCicd', this.licensePresets.cicd);
+        setOption('optIde', this.licensePresets.ide);
+
+        // Sliders default values
+        document.getElementById('riskBuffer').value = this.config.riskBuffer;
+        document.getElementById('commercialMargin').value = this.config.commercialMargin;
+        document.getElementById('riskValue').textContent = this.config.riskBuffer;
+        document.getElementById('marginValue').textContent = this.config.commercialMargin;
+
+        // Config form values
+        document.getElementById('cfgJunior').value = this.rates.junior;
+        document.getElementById('cfgMid').value = this.rates.mid;
+        document.getElementById('cfgSenior').value = this.rates.senior;
+        document.getElementById('cfgArchitect').value = this.rates.architect;
+        document.getElementById('cfgQaManual').value = this.rates.qaManual;
+        document.getElementById('cfgQaAuto').value = this.rates.qaAuto;
+        document.getElementById('cfgDocumentation').value = this.rates.documentation;
+        document.getElementById('cfgTraining').value = this.rates.training;
+        document.getElementById('cfgProjectMgmt').value = this.rates.projectMgmt;
+        document.getElementById('cfgAssembly').value = this.hardwareCosts.assembly;
+        document.getElementById('cfgCertification').value = this.hardwareCosts.certification;
+        document.getElementById('cfgLogistics').value = this.hardwareCosts.logistics;
+        document.getElementById('cfgLicDbName').value = this.licensePresets.database.name;
+        document.getElementById('cfgLicDbCost').value = this.licensePresets.database.cost;
+        document.getElementById('cfgLicFwName').value = this.licensePresets.framework.name;
+        document.getElementById('cfgLicFwCost').value = this.licensePresets.framework.cost;
+        document.getElementById('cfgLicCiName').value = this.licensePresets.cicd.name;
+        document.getElementById('cfgLicCiCost').value = this.licensePresets.cicd.cost;
+        document.getElementById('cfgLicIdeName').value = this.licensePresets.ide.name;
+        document.getElementById('cfgLicIdeCost').value = this.licensePresets.ide.cost;
+    }
+
+    updateConfigFromForm() {
+        this.config.rates.junior = parseFloat(document.getElementById('cfgJunior').value) || 0;
+        this.config.rates.mid = parseFloat(document.getElementById('cfgMid').value) || 0;
+        this.config.rates.senior = parseFloat(document.getElementById('cfgSenior').value) || 0;
+        this.config.rates.architect = parseFloat(document.getElementById('cfgArchitect').value) || 0;
+        this.config.rates.qaManual = parseFloat(document.getElementById('cfgQaManual').value) || 0;
+        this.config.rates.qaAuto = parseFloat(document.getElementById('cfgQaAuto').value) || 0;
+        this.config.rates.documentation = parseFloat(document.getElementById('cfgDocumentation').value) || 0;
+        this.config.rates.training = parseFloat(document.getElementById('cfgTraining').value) || 0;
+        this.config.rates.projectMgmt = parseFloat(document.getElementById('cfgProjectMgmt').value) || 0;
+        this.config.hardwareCosts.assembly = parseFloat(document.getElementById('cfgAssembly').value) || 0;
+        this.config.hardwareCosts.certification = parseFloat(document.getElementById('cfgCertification').value) || 0;
+        this.config.hardwareCosts.logistics = parseFloat(document.getElementById('cfgLogistics').value) || 0;
+        this.config.licensePresets.database.name = document.getElementById('cfgLicDbName').value || '';
+        this.config.licensePresets.database.cost = parseFloat(document.getElementById('cfgLicDbCost').value) || 0;
+        this.config.licensePresets.framework.name = document.getElementById('cfgLicFwName').value || '';
+        this.config.licensePresets.framework.cost = parseFloat(document.getElementById('cfgLicFwCost').value) || 0;
+        this.config.licensePresets.cicd.name = document.getElementById('cfgLicCiName').value || '';
+        this.config.licensePresets.cicd.cost = parseFloat(document.getElementById('cfgLicCiCost').value) || 0;
+        this.config.licensePresets.ide.name = document.getElementById('cfgLicIdeName').value || '';
+        this.config.licensePresets.ide.cost = parseFloat(document.getElementById('cfgLicIdeCost').value) || 0;
+
+        this.rates = { ...this.config.rates };
+        this.hardwareCosts = { ...this.config.hardwareCosts };
+        this.licensePresets = JSON.parse(JSON.stringify(this.config.licensePresets));
+    }
+
     init() {
+        this.applyConfigToUI();
         this.bindEvents();
         this.initChart();
         this.updateVisibility();
@@ -81,10 +202,7 @@ class CostCalculator {
             checkbox.addEventListener('change', () => {
                 costInput.disabled = !checkbox.checked;
                 if (checkbox.checked && costInput.value === '') {
-                    // Set default values when checkbox is checked
-                    if (service === 'assembly') costInput.value = 1500;
-                    if (service === 'certification') costInput.value = 6000;
-                    if (service === 'logistics') costInput.value = 800;
+                    costInput.value = this.hardwareCosts[service];
                 }
                 this.calculateHardwareServices();
                 this.calculateAll();
@@ -112,6 +230,8 @@ class CostCalculator {
         
         riskSlider.addEventListener('input', () => {
             riskValue.textContent = riskSlider.value;
+            this.config.riskBuffer = parseInt(riskSlider.value);
+            saveConfig(this.config);
             this.calculateAll();
         });
 
@@ -120,6 +240,8 @@ class CostCalculator {
         
         marginSlider.addEventListener('input', () => {
             marginValue.textContent = marginSlider.value;
+            this.config.commercialMargin = parseInt(marginSlider.value);
+            saveConfig(this.config);
             this.calculateAll();
         });
 
@@ -135,6 +257,23 @@ class CostCalculator {
 
         document.getElementById('loadBtn').addEventListener('click', () => {
             this.loadFromStorage();
+        });
+
+        document.getElementById('navConfig').addEventListener('click', () => {
+            document.getElementById('calculatorView').style.display = 'none';
+            document.getElementById('configSection').style.display = 'block';
+        });
+
+        document.getElementById('navCalculator').addEventListener('click', () => {
+            document.getElementById('calculatorView').style.display = 'block';
+            document.getElementById('configSection').style.display = 'none';
+        });
+
+        document.getElementById('saveConfigBtn').addEventListener('click', () => {
+            this.updateConfigFromForm();
+            saveConfig(this.config);
+            this.applyConfigToUI();
+            this.calculateAll();
         });
 
         // Initial license row setup
@@ -357,10 +496,10 @@ class CostCalculator {
         newRow.innerHTML = `
             <select class="form-control license-select">
                 <option value="">Selectează licența...</option>
-                <option value="database">Licență Bază de Date Enterprise (5000 €)</option>
-                <option value="framework">Framework Comercial (2500 €)</option>
-                <option value="cicd">Instrumente CI/CD (1000 €)</option>
-                <option value="ide">IDE Professional (500 €)</option>
+                <option value="database">${this.licensePresets.database.name} (${this.licensePresets.database.cost} €)</option>
+                <option value="framework">${this.licensePresets.framework.name} (${this.licensePresets.framework.cost} €)</option>
+                <option value="cicd">${this.licensePresets.cicd.name} (${this.licensePresets.cicd.cost} €)</option>
+                <option value="ide">${this.licensePresets.ide.name} (${this.licensePresets.ide.cost} €)</option>
                 <option value="custom">Personalizată</option>
             </select>
             <input type="text" class="form-control license-name" placeholder="Numele licenței" style="display: none;">
@@ -569,10 +708,10 @@ class CostCalculator {
             });
 
             // Reset sliders to defaults
-            document.getElementById('riskBuffer').value = 15;
-            document.getElementById('commercialMargin').value = 20;
-            document.getElementById('riskValue').textContent = '15';
-            document.getElementById('marginValue').textContent = '20';
+            document.getElementById('riskBuffer').value = this.config.riskBuffer;
+            document.getElementById('commercialMargin').value = this.config.commercialMargin;
+            document.getElementById('riskValue').textContent = this.config.riskBuffer;
+            document.getElementById('marginValue').textContent = this.config.commercialMargin;
 
             // Reset project type
             document.getElementById('projectType').value = 'software';
@@ -601,6 +740,7 @@ class CostCalculator {
             document.querySelector('.component-name').value = '';
             document.querySelector('.component-price').value = '';
 
+            this.applyConfigToUI();
             this.updateVisibility();
             this.calculateAll();
             this.showMessage('Calculatorul a fost resetat!', 'info');
