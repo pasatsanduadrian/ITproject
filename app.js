@@ -739,7 +739,7 @@ class CostCalculator {
             const opt = {
                 margin:       10,
                 filename:     'estimare_costuri.pdf',
-                html2canvas:  { scale: 2 },
+                html2canvas:  { scale: 2, useCORS: true },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
