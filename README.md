@@ -42,6 +42,9 @@ si apoi deschizi `http://localhost:8000` in browser.
 ### Export PDF
 Exportul PDF foloseste libraria `html2pdf.js` incarcata de pe CDN. Daca nu exista conexiune la internet, aplicatia va deschide fereastra de printare a browserului. Pentru generarea automata a PDF-ului offline, descarca versiunea originala `html2pdf.bundle.min.js` si inlocuieste fisierul din directorul `lib/`.
 
+### Export TXT
+Butonul **Exportă TXT** creează un fișier text cu sumarul ofertului curent (proiect, client și costuri). Fișierul este generat local și poate fi descărcat direct din browser.
+
 ## Exemple vizuale
 
 *(Poti adauga aici capturi de ecran cu interfata aplicatiei.)*
