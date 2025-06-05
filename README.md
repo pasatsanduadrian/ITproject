@@ -24,7 +24,7 @@ ITproject/
 
 1. Instaleaza dependintele daca vrei sa folosesti `deploy.py`:
    ```bash
-   pip install pyngrok python-dotenv
+   pip install -r requirements.txt
    ```
 2. Copiaza fisierul `.env.example` in `.env` si completeaza valorile propriilor tokenuri.
 3. Lanseaza aplicatia folosind scriptul de deploy:
