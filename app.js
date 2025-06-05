@@ -784,24 +784,113 @@ class CostCalculator {
 
     exportTXT() {
         this.calculateAll();
+
+        const getVal = id => document.getElementById(id).value;
+        const getText = id => document.getElementById(id).textContent;
+
         const typeSelect = document.getElementById('projectType');
         const typeText = typeSelect.options[typeSelect.selectedIndex].text;
         const compSelect = document.getElementById('complexity');
         const compText = compSelect.options[compSelect.selectedIndex].text;
 
-        const lines = [
-            `Proiect: ${document.getElementById('projectName').value}`,
-            `Client: ${document.getElementById('clientName').value}`,
-            `Tip proiect: ${typeText}`,
-            `Complexitate: ${compText}`,
-            '',
-            `Costuri Software: ${document.getElementById('summarySoftware').textContent}`,
-            `Costuri Hardware: ${document.getElementById('summaryHardware').textContent}`,
-            `Subtotal: ${document.getElementById('summarySubtotal').textContent}`,
-            `Buffer Risc: ${document.getElementById('summaryRisk').textContent}`,
-            `Marjă Comercială: ${document.getElementById('summaryMargin').textContent}`,
-            `TOTAL FINAL: ${document.getElementById('summaryTotal').textContent}`
-        ];
+        const lines = [];
+        lines.push(`Proiect: ${getVal('projectName')}`);
+        lines.push(`Client: ${getVal('clientName')}`);
+        lines.push(`Tip proiect: ${typeText}`);
+        lines.push(`Complexitate: ${compText}`);
+        lines.push('');
+
+        // Software costs
+        lines.push('=== Costuri Software ===');
+        const roleNames = {
+            junior: 'Developer Junior',
+            mid: 'Developer Mid',
+            senior: 'Developer Senior',
+            architect: 'Arhitect Software'
+        };
+        ['junior', 'mid', 'senior', 'architect'].forEach(role => {
+            const hours = parseFloat(getVal(`${role}Hours`)) || 0;
+            if (hours > 0) {
+                const rate = this.rates[role];
+                const total = hours * rate;
+                lines.push(`- ${roleNames[role]}: ${hours}h x ${rate} €/h = ${total.toLocaleString('ro-RO')} €`);
+            }
+        });
+
+        const serviceNames = {
+            qaManual: 'Testare QA Manual',
+            qaAuto: 'Testare QA Automatizat',
+            documentation: 'Documentație Tehnică',
+            training: 'Training Utilizatori',
+            projectMgmt: 'Management Proiect'
+        };
+        ['qaManual', 'qaAuto', 'documentation', 'training', 'projectMgmt'].forEach(service => {
+            if (document.getElementById(service).checked) {
+                const hours = parseFloat(getVal(`${service}Hours`)) || 0;
+                const rate = this.rates[service];
+                const total = hours * rate;
+                lines.push(`- ${serviceNames[service]}: ${hours}h x ${rate} €/h = ${total.toLocaleString('ro-RO')} €`);
+            }
+        });
+
+        const licenseItems = document.querySelectorAll('.license-item');
+        if (licenseItems.length) {
+            lines.push('Licențe:');
+            licenseItems.forEach(item => {
+                const quantity = parseFloat(item.querySelector('.license-quantity').value) || 0;
+                const cost = parseFloat(item.querySelector('.license-cost').value) || 0;
+                const nameField = item.querySelector('.license-name');
+                let name = '';
+                if (nameField && nameField.style.display !== 'none' && nameField.value) {
+                    name = nameField.value;
+                } else {
+                    const sel = item.querySelector('.license-select');
+                    const opt = sel.options[sel.selectedIndex];
+                    name = opt ? opt.textContent : '';
+                }
+                if (name && quantity && cost) {
+                    const itemTotal = quantity * cost;
+                    lines.push(`  - ${name}: ${quantity} x ${cost} € = ${itemTotal.toLocaleString('ro-RO')} €`);
+                }
+            });
+        }
+        lines.push(`Subtotal Software: ${getText('softwareTotal')}`);
+        lines.push('');
+
+        // Hardware costs
+        lines.push('=== Costuri Hardware ===');
+        const componentItems = document.querySelectorAll('.component-item');
+        if (componentItems.length) {
+            lines.push('Componente:');
+            componentItems.forEach(item => {
+                const name = item.querySelector('.component-name').value;
+                const qty = parseFloat(item.querySelector('.component-quantity').value) || 0;
+                const price = parseFloat(item.querySelector('.component-price').value) || 0;
+                if (name && qty && price) {
+                    const itemTotal = qty * price;
+                    lines.push(`  - ${name}: ${qty} x ${price} € = ${itemTotal.toLocaleString('ro-RO')} €`);
+                }
+            });
+        }
+
+        const hwServiceNames = {
+            assembly: 'Asamblare și Testare',
+            certification: 'Certificări (CE, FCC, ROHS)',
+            logistics: 'Logistică și Transport'
+        };
+        ['assembly', 'certification', 'logistics'].forEach(service => {
+            if (document.getElementById(service).checked) {
+                const cost = parseFloat(getVal(`${service}Cost`)) || 0;
+                lines.push(`- ${hwServiceNames[service]}: ${cost.toLocaleString('ro-RO')} €`);
+            }
+        });
+        lines.push(`Subtotal Hardware: ${getText('hardwareTotal')}`);
+        lines.push('');
+
+        lines.push(`Subtotal General: ${getText('summarySubtotal')}`);
+        lines.push(`Buffer Risc: ${getText('summaryRisk')}`);
+        lines.push(`Marjă Comercială: ${getText('summaryMargin')}`);
+        lines.push(`TOTAL FINAL: ${getText('summaryTotal')}`);
 
         const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
