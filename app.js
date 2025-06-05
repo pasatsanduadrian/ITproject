@@ -256,6 +256,13 @@ class CostCalculator {
             this.loadFromStorage();
         });
 
+        const exportTxtBtn = document.getElementById('exportTxtBtn');
+        if (exportTxtBtn) {
+            exportTxtBtn.addEventListener('click', () => {
+                this.exportTXT();
+            });
+        }
+
         document.getElementById('navConfig').addEventListener('click', () => {
             document.getElementById('calculatorView').style.display = 'none';
             document.getElementById('configSection').style.display = 'block';
@@ -773,6 +780,38 @@ class CostCalculator {
                 document.body.removeChild(clone);
             }
         }, 300);
+    }
+
+    exportTXT() {
+        this.calculateAll();
+        const typeSelect = document.getElementById('projectType');
+        const typeText = typeSelect.options[typeSelect.selectedIndex].text;
+        const compSelect = document.getElementById('complexity');
+        const compText = compSelect.options[compSelect.selectedIndex].text;
+
+        const lines = [
+            `Proiect: ${document.getElementById('projectName').value}`,
+            `Client: ${document.getElementById('clientName').value}`,
+            `Tip proiect: ${typeText}`,
+            `Complexitate: ${compText}`,
+            '',
+            `Costuri Software: ${document.getElementById('summarySoftware').textContent}`,
+            `Costuri Hardware: ${document.getElementById('summaryHardware').textContent}`,
+            `Subtotal: ${document.getElementById('summarySubtotal').textContent}`,
+            `Buffer Risc: ${document.getElementById('summaryRisk').textContent}`,
+            `Marjă Comercială: ${document.getElementById('summaryMargin').textContent}`,
+            `TOTAL FINAL: ${document.getElementById('summaryTotal').textContent}`
+        ];
+
+        const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'estimare_costuri.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     }
 
     resetCalculator() {
