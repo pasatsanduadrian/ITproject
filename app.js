@@ -720,10 +720,15 @@ class CostCalculator {
             return;
         }
 
+        if (typeof window.html2pdf === 'undefined') {
+            this.showMessage('Export PDF indisponibil', 'error');
+            return;
+        }
+
         // Asigură că datele și graficul sunt actualizate înainte de export
         this.calculateAll();
 
-        setTimeout(() => {
+        setTimeout(async () => {
             const clone = element.cloneNode(true);
             // The cloned section retains the Chart.js canvas.
             // html2canvas (useCORS: true) captures it directly.
@@ -739,9 +744,13 @@ class CostCalculator {
             clone.style.left = '-9999px';
             document.body.appendChild(clone);
 
-            html2pdf().set(opt).from(clone).save().then(() => {
+            try {
+                await html2pdf().set(opt).from(clone).save();
+            } catch (err) {
+                this.showMessage('Export PDF indisponibil', 'error');
+            } finally {
                 document.body.removeChild(clone);
-            });
+            }
         }, 300);
     }
 
