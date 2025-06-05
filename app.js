@@ -725,8 +725,15 @@ class CostCalculator {
 
         setTimeout(() => {
             const clone = element.cloneNode(true);
-            // The cloned section retains the Chart.js canvas.
-            // html2canvas (useCORS: true) captures it directly.
+            // Replace the chart canvas with an image so html2pdf can render it
+            const clonedCanvas = clone.querySelector('#costChart');
+            if (clonedCanvas && this.chart) {
+                const img = document.createElement('img');
+                img.src = this.chart.toBase64Image();
+                img.style.maxWidth = '100%';
+                img.style.height = 'auto';
+                clonedCanvas.parentNode.replaceChild(img, clonedCanvas);
+            }
 
             const opt = {
                 margin:       10,
