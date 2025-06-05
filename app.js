@@ -130,6 +130,7 @@ class CostCalculator {
 
         document.getElementById('saveBtn').addEventListener('click', () => {
             this.saveToStorage();
+            this.exportPDF();
         });
 
         document.getElementById('loadBtn').addEventListener('click', () => {
@@ -532,6 +533,23 @@ class CostCalculator {
             this.showMessage('Eroare la încărcarea estimării!', 'error');
             console.error('Error loading estimation:', error);
         }
+    }
+
+    exportPDF() {
+        const element = document.getElementById('summarySection');
+        if (!element) {
+            this.showMessage('Secțiunea de sumar nu a fost găsită!', 'error');
+            return;
+        }
+
+        const opt = {
+            margin:       10,
+            filename:     'estimare_costuri.pdf',
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save();
     }
 
     resetCalculator() {
