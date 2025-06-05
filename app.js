@@ -681,14 +681,31 @@ class CostCalculator {
             return;
         }
 
-        const opt = {
-            margin:       10,
-            filename:     'estimare_costuri.pdf',
-            html2canvas:  { scale: 2 },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
+        // Asigură că datele și graficul sunt actualizate înainte de export
+        this.calculateAll();
 
-        html2pdf().set(opt).from(element).save();
+        setTimeout(() => {
+            const clone = element.cloneNode(true);
+            const canvas = element.querySelector('#costChart');
+            const cloneCanvas = clone.querySelector('#costChart');
+
+            if (canvas && cloneCanvas) {
+                const img = document.createElement('img');
+                img.src = canvas.toDataURL('image/png');
+                img.width = canvas.width;
+                img.height = canvas.height;
+                cloneCanvas.parentNode.replaceChild(img, cloneCanvas);
+            }
+
+            const opt = {
+                margin:       10,
+                filename:     'estimare_costuri.pdf',
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(clone).save();
+        }, 300);
     }
 
     resetCalculator() {
