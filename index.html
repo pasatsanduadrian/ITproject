@@ -166,14 +166,7 @@
                     <h3 class="mb-16 mt-24">Licențe Software</h3>
                     <div id="licensesContainer">
                         <div class="license-item">
-                            <select class="form-control license-select">
-                                <option value="">Selectează licența...</option>
-                                <option value="database" id="optDatabase"></option>
-                                <option value="framework" id="optFramework"></option>
-                                <option value="cicd" id="optCicd"></option>
-                                <option value="ide" id="optIde"></option>
-                                <option value="custom">Personalizată</option>
-                            </select>
+                            <select class="form-control license-select"></select>
                             <input type="text" class="form-control license-name" placeholder="Numele licenței" style="display: none;">
                             <input type="number" class="form-control license-quantity" placeholder="Cantitate" min="1" value="1">
                             <input type="number" class="form-control license-cost" placeholder="Cost unitar" min="0">
@@ -386,32 +379,8 @@
                     </div>
 
                     <h3 class="mb-8 mt-24">Preseturi Licențe</h3>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="cfgLicDbName" class="form-label">Bază de Date - Nume</label>
-                            <input type="text" id="cfgLicDbName" class="form-control">
-                            <label for="cfgLicDbCost" class="form-label mt-4">Cost (€)</label>
-                            <input type="number" id="cfgLicDbCost" class="form-control" min="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="cfgLicFwName" class="form-label">Framework - Nume</label>
-                            <input type="text" id="cfgLicFwName" class="form-control">
-                            <label for="cfgLicFwCost" class="form-label mt-4">Cost (€)</label>
-                            <input type="number" id="cfgLicFwCost" class="form-control" min="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="cfgLicCiName" class="form-label">CI/CD - Nume</label>
-                            <input type="text" id="cfgLicCiName" class="form-control">
-                            <label for="cfgLicCiCost" class="form-label mt-4">Cost (€)</label>
-                            <input type="number" id="cfgLicCiCost" class="form-control" min="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="cfgLicIdeName" class="form-label">IDE - Nume</label>
-                            <input type="text" id="cfgLicIdeName" class="form-control">
-                            <label for="cfgLicIdeCost" class="form-label mt-4">Cost (€)</label>
-                            <input type="number" id="cfgLicIdeCost" class="form-control" min="0">
-                        </div>
-                    </div>
+                    <div id="licensePresetsConfig"></div>
+                    <button type="button" id="addPresetBtn" class="btn btn--outline btn--sm mt-8">+ Adaugă Preset</button>
 
                     <div class="mt-24 flex justify-center">
                         <button type="button" id="saveConfigBtn" class="btn btn--primary">Salvează Config</button>

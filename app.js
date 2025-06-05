@@ -17,12 +17,12 @@ const defaultConfig = {
         certification: 6000,
         logistics: 800
     },
-    licensePresets: {
-        database: { name: 'Licență Bază de Date Enterprise', cost: 5000 },
-        framework: { name: 'Framework Comercial', cost: 2500 },
-        cicd: { name: 'Instrumente CI/CD', cost: 1000 },
-        ide: { name: 'IDE Professional', cost: 500 }
-    },
+    licensePresets: [
+        { id: 'database', name: 'Licență Bază de Date Enterprise', cost: 5000 },
+        { id: 'framework', name: 'Framework Comercial', cost: 2500 },
+        { id: 'cicd', name: 'Instrumente CI/CD', cost: 1000 },
+        { id: 'ide', name: 'IDE Professional', cost: 500 }
+    ],
     riskBuffer: 15,
     commercialMargin: 20
 };
@@ -79,15 +79,10 @@ class CostCalculator {
         document.getElementById('certificationCost').placeholder = this.hardwareCosts.certification;
         document.getElementById('logisticsCost').placeholder = this.hardwareCosts.logistics;
 
-        // License option texts
-        const setOption = (id, obj) => {
-            const el = document.getElementById(id);
-            if (el) el.textContent = `${obj.name} (${obj.cost} €)`;
-        };
-        setOption('optDatabase', this.licensePresets.database);
-        setOption('optFramework', this.licensePresets.framework);
-        setOption('optCicd', this.licensePresets.cicd);
-        setOption('optIde', this.licensePresets.ide);
+        // License selects
+        document.querySelectorAll('.license-select').forEach(sel => {
+            this.populateLicenseSelect(sel);
+        });
 
         // Sliders default values
         document.getElementById('riskBuffer').value = this.config.riskBuffer;
@@ -108,14 +103,7 @@ class CostCalculator {
         document.getElementById('cfgAssembly').value = this.hardwareCosts.assembly;
         document.getElementById('cfgCertification').value = this.hardwareCosts.certification;
         document.getElementById('cfgLogistics').value = this.hardwareCosts.logistics;
-        document.getElementById('cfgLicDbName').value = this.licensePresets.database.name;
-        document.getElementById('cfgLicDbCost').value = this.licensePresets.database.cost;
-        document.getElementById('cfgLicFwName').value = this.licensePresets.framework.name;
-        document.getElementById('cfgLicFwCost').value = this.licensePresets.framework.cost;
-        document.getElementById('cfgLicCiName').value = this.licensePresets.cicd.name;
-        document.getElementById('cfgLicCiCost').value = this.licensePresets.cicd.cost;
-        document.getElementById('cfgLicIdeName').value = this.licensePresets.ide.name;
-        document.getElementById('cfgLicIdeCost').value = this.licensePresets.ide.cost;
+        this.renderLicensePresetConfig();
     }
 
     updateConfigFromForm() {
@@ -131,14 +119,15 @@ class CostCalculator {
         this.config.hardwareCosts.assembly = parseFloat(document.getElementById('cfgAssembly').value) || 0;
         this.config.hardwareCosts.certification = parseFloat(document.getElementById('cfgCertification').value) || 0;
         this.config.hardwareCosts.logistics = parseFloat(document.getElementById('cfgLogistics').value) || 0;
-        this.config.licensePresets.database.name = document.getElementById('cfgLicDbName').value || '';
-        this.config.licensePresets.database.cost = parseFloat(document.getElementById('cfgLicDbCost').value) || 0;
-        this.config.licensePresets.framework.name = document.getElementById('cfgLicFwName').value || '';
-        this.config.licensePresets.framework.cost = parseFloat(document.getElementById('cfgLicFwCost').value) || 0;
-        this.config.licensePresets.cicd.name = document.getElementById('cfgLicCiName').value || '';
-        this.config.licensePresets.cicd.cost = parseFloat(document.getElementById('cfgLicCiCost').value) || 0;
-        this.config.licensePresets.ide.name = document.getElementById('cfgLicIdeName').value || '';
-        this.config.licensePresets.ide.cost = parseFloat(document.getElementById('cfgLicIdeCost').value) || 0;
+        this.config.licensePresets = [];
+        document.querySelectorAll('#licensePresetsConfig .preset-row').forEach(row => {
+            const id = row.querySelector('.preset-id').value.trim();
+            const name = row.querySelector('.preset-name').value.trim();
+            const cost = parseFloat(row.querySelector('.preset-cost').value) || 0;
+            if (id) {
+                this.config.licensePresets.push({ id, name, cost });
+            }
+        });
 
         this.rates = { ...this.config.rates };
         this.hardwareCosts = { ...this.config.hardwareCosts };
@@ -223,6 +212,14 @@ class CostCalculator {
         document.getElementById('addComponent').addEventListener('click', () => {
             this.addComponentRow();
         });
+
+        // License preset management
+        const addPresetBtn = document.getElementById('addPresetBtn');
+        if (addPresetBtn) {
+            addPresetBtn.addEventListener('click', () => {
+                this.addPresetRow();
+            });
+        }
 
         // Sliders
         const riskSlider = document.getElementById('riskBuffer');
@@ -489,32 +486,42 @@ class CostCalculator {
         }
     }
 
+    populateLicenseSelect(select) {
+        if (!select) return;
+        select.innerHTML = '<option value="">Selectează licența...</option>';
+        this.licensePresets.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.id;
+            opt.textContent = `${p.name} (${p.cost} €)`;
+            select.appendChild(opt);
+        });
+        const custom = document.createElement('option');
+        custom.value = 'custom';
+        custom.textContent = 'Personalizată';
+        select.appendChild(custom);
+    }
+
     addLicenseRow() {
         const container = document.getElementById('licensesContainer');
         const newRow = document.createElement('div');
         newRow.className = 'license-item';
         newRow.innerHTML = `
-            <select class="form-control license-select">
-                <option value="">Selectează licența...</option>
-                <option value="database">${this.licensePresets.database.name} (${this.licensePresets.database.cost} €)</option>
-                <option value="framework">${this.licensePresets.framework.name} (${this.licensePresets.framework.cost} €)</option>
-                <option value="cicd">${this.licensePresets.cicd.name} (${this.licensePresets.cicd.cost} €)</option>
-                <option value="ide">${this.licensePresets.ide.name} (${this.licensePresets.ide.cost} €)</option>
-                <option value="custom">Personalizată</option>
-            </select>
+            <select class="form-control license-select"></select>
             <input type="text" class="form-control license-name" placeholder="Numele licenței" style="display: none;">
             <input type="number" class="form-control license-quantity" placeholder="Cantitate" min="1" value="1">
             <input type="number" class="form-control license-cost" placeholder="Cost unitar" min="0">
             <span class="license-total">0 €</span>
             <button type="button" class="btn btn--secondary btn--sm remove-license">Șterge</button>
         `;
-        
+
         container.appendChild(newRow);
+        this.populateLicenseSelect(newRow.querySelector('.license-select'));
         this.bindLicenseRow(newRow);
     }
 
     bindLicenseRow(row) {
         const select = row.querySelector('.license-select');
+        this.populateLicenseSelect(select);
         const nameInput = row.querySelector('.license-name');
         const quantityInput = row.querySelector('.license-quantity');
         const costInput = row.querySelector('.license-cost');
@@ -524,12 +531,15 @@ class CostCalculator {
             if (select.value === 'custom') {
                 nameInput.style.display = 'block';
                 costInput.value = '';
-            } else if (select.value && this.licensePresets[select.value]) {
-                nameInput.style.display = 'none';
-                costInput.value = this.licensePresets[select.value].cost;
             } else {
-                nameInput.style.display = 'none';
-                costInput.value = '';
+                const preset = this.licensePresets.find(p => p.id === select.value);
+                if (preset) {
+                    nameInput.style.display = 'none';
+                    costInput.value = preset.cost;
+                } else {
+                    nameInput.style.display = 'none';
+                    costInput.value = '';
+                }
             }
             this.calculateAll();
         });
@@ -545,6 +555,35 @@ class CostCalculator {
                 row.remove();
                 this.calculateAll();
             }
+        });
+    }
+
+    renderLicensePresetConfig() {
+        const container = document.getElementById('licensePresetsConfig');
+        if (!container) return;
+        container.innerHTML = '';
+        this.licensePresets.forEach(p => this.addPresetRow(p));
+    }
+
+    addPresetRow(preset = { id: '', name: '', cost: 0 }) {
+        const container = document.getElementById('licensePresetsConfig');
+        if (!container) return;
+        const row = document.createElement('div');
+        row.className = 'preset-row';
+        row.innerHTML = `
+            <input type="text" class="form-control preset-id" placeholder="ID" value="${preset.id}">
+            <input type="text" class="form-control preset-name" placeholder="Nume" value="${preset.name}">
+            <input type="number" class="form-control preset-cost" placeholder="Cost (€)" min="0" value="${preset.cost}">
+            <button type="button" class="btn btn--secondary btn--sm remove-preset">Șterge</button>
+        `;
+        container.appendChild(row);
+        this.bindPresetRow(row);
+    }
+
+    bindPresetRow(row) {
+        const removeBtn = row.querySelector('.remove-preset');
+        removeBtn.addEventListener('click', () => {
+            row.remove();
         });
     }
 
