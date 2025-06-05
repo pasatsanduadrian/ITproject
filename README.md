@@ -26,14 +26,7 @@ ITproject/
    ```bash
    pip install pyngrok python-dotenv
    ```
-2. Creeaza fisierul `.env` cu tokenurile tale, dupa exemplu:
-   ```python
-   with open(".env", "w") as f:
-       f.write("SECRET_KEY=random123\n")
-       f.write("GEMINI_API_KEY=tokenul_tau_aici\n")
-       f.write("NGROK_TOKEN=tokenul_tau_aici\n")
-       f.write("NGROK_HOSTNAME=stable-xxxxx-xxxxx.ngrok-free.app\n")
-   ```
+2. Copiaza fisierul `.env.example` in `.env` si completeaza valorile propriilor tokenuri.
 3. Lanseaza aplicatia folosind scriptul de deploy:
    ```bash
    python deploy.py
