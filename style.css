@@ -859,6 +859,32 @@ select.form-control {
   text-align: right;
 }
 
+/* License Presets Config */
+#licensePresetsConfig {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.preset-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto auto;
+  gap: var(--space-12);
+  align-items: center;
+}
+
+.preset-id,
+.preset-name,
+.preset-cost {
+  font-size: var(--font-size-sm);
+  padding: var(--space-6) var(--space-8);
+}
+
+.remove-preset {
+  font-size: var(--font-size-xs);
+  padding: var(--space-4) var(--space-8);
+}
+
 /* Totals Display */
 .software-total,
 .hardware-total {
