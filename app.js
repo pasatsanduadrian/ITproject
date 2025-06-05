@@ -721,7 +721,21 @@ class CostCalculator {
         }
 
         if (typeof window.html2pdf === 'undefined' || window.html2pdf.isStub) {
-            this.showMessage('Export PDF indisponibil', 'error');
+            // Fallback simplu la funcția de printare a browserului atunci când
+            // librăria html2pdf nu este disponibilă (de exemplu, offline).
+            const printContents = element.cloneNode(true);
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write('<html><head><title>Estimare costuri</title>');
+            document.querySelectorAll('link[rel="stylesheet"], style').forEach(s => {
+                printWindow.document.write(s.outerHTML);
+            });
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(printContents.outerHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+            printWindow.close();
             return;
         }
 
