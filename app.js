@@ -725,9 +725,8 @@ class CostCalculator {
 
         setTimeout(() => {
             const clone = element.cloneNode(true);
-            // Let html2canvas handle the Chart.js canvas directly to avoid
-            // cross-origin issues when calling `toDataURL` manually.
-            // The cloned section will contain the original canvas element.
+            // The cloned section retains the Chart.js canvas.
+            // html2canvas (useCORS: true) captures it directly.
 
             const opt = {
                 margin:       10,
