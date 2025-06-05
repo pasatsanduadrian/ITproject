@@ -743,7 +743,13 @@ class CostCalculator {
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            html2pdf().set(opt).from(clone).save();
+            clone.style.position = 'fixed';
+            clone.style.left = '-9999px';
+            document.body.appendChild(clone);
+
+            html2pdf().set(opt).from(clone).save().then(() => {
+                document.body.removeChild(clone);
+            });
         }, 300);
     }
 
